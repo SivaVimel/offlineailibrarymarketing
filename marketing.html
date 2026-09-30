@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Babel — Any book, written on your device</title>
+  <meta name="description" content="Describe any book and Babel writes it for you, chapter by chapter, right on your iPhone or iPad. No account, no internet, nothing leaves your device.">
+  <meta property="og:title" content="Babel — Any book, written on your device">
+  <meta property="og:description" content="Describe any book and Babel writes it for you, chapter by chapter, on your iPhone or iPad. Private by design.">
+  <meta property="og:image" content="babel-icon.png">
+  <link rel="icon" href="babel-icon.png">
+  <link rel="apple-touch-icon" href="babel-icon.png">
+  <style>
+    :root {
+      --bg: #ECECEE; --surface: #F6F6F7; --card: #FFFFFF; --field: #E0E0E4; --line: #D4D4D8;
+      --page: #F3F3F1; --ink: #1B1C1F; --ink-soft: #55575E; --ink-faint: #8C8E95;
+      --orange: #FF6A13; --on-orange: #17181A;
+      --serif: "New York", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1C1D20; --surface: #26272B; --card: #303136; --field: #2C2D32; --line: #393A40;
+        --page: #202124; --ink: #ECECEE; --ink-soft: #A9AAB0; --ink-faint: #74767D; --orange: #FF7A2B;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 var(--sans); }
+    a { color: var(--orange); }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    .serif { font-family: var(--serif); }
+
+    /* Nav */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+    .brand img { width: 36px; height: 36px; border-radius: 9px; }
+    .brand span { font: 700 26px/1 var(--serif); }
+    nav .links a { color: var(--ink-soft); text-decoration: none; margin-left: 22px; font-size: 15px; }
+    nav .links a:hover { color: var(--ink); }
+
+    /* Hero */
+    .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; padding: 40px 0 72px; }
+    .eyebrow { color: var(--orange); font: 700 12px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; }
+    h1 { font: 600 clamp(40px, 6vw, 64px)/1.05 var(--serif); margin: 14px 0 18px; letter-spacing: -.01em; }
+    .lead { font-size: 20px; color: var(--ink-soft); max-width: 34em; margin: 0 0 28px; }
+    .fine { color: var(--ink-faint); font-size: 14px; margin-top: 14px; }
+
+    /* Phone mock with the reader */
+    .phone { justify-self: center; width: min(320px, 100%); aspect-ratio: 9 / 19; background: #111; border-radius: 44px;
+             padding: 12px; box-shadow: 0 30px 60px rgba(0,0,0,.18); }
+    .screen { height: 100%; background: var(--page); border-radius: 34px; overflow: hidden; display: flex; flex-direction: column; }
+    .bar { display: flex; align-items: center; justify-content: space-between; padding: 30px 18px 10px; border-bottom: 1px solid var(--line); }
+    .bar b { font: 600 13px/1.2 var(--serif); }
+    .bar small { display: block; color: var(--ink-faint); font-size: 9px; text-align: center; }
+    .bar i { font-style: normal; color: var(--ink); font-size: 14px; width: 18px; }
+    .pagetext { padding: 16px 20px; font: 13px/1.6 var(--serif); color: var(--ink); flex: 1; overflow: hidden; }
+    .pagetext .ch { text-align: center; color: var(--orange); font: 700 9px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; margin-top: 6px; }
+    .pagetext h4 { text-align: center; font: 600 20px/1.2 var(--serif); margin: 6px 0 14px; }
+    .pagetext p { margin: 0 0 10px; }
+    .writing { align-self: center; margin: 0 0 12px; background: var(--card); color: var(--ink-soft); font-size: 11px; font-weight: 600;
+               padding: 6px 12px; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .writing::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--orange); margin-right: 6px; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 50% { opacity: .25; } }
+    .foot { padding: 8px 20px 18px; font-size: 9px; color: var(--ink-faint); }
+    .foot .track { height: 2px; background: var(--line); border-radius: 2px; margin-bottom: 6px; }
+    .foot .track span { display: block; width: 36%; height: 100%; background: var(--orange); border-radius: 2px; }
+
+    /* Cover shelf */
+    .shelf { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; padding: 8px 0 72px; }
+    .cover { aspect-ratio: 2 / 3; border-radius: 5px; position: relative; overflow: hidden; color: #fff;
+             display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 16px 10px 12px 16px;
+             box-shadow: 0 6px 14px rgba(0,0,0,.18); text-align: center; }
+    .cover::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: linear-gradient(90deg, rgba(0,0,0,.35), transparent); }
+    .cover .mark { width: 30px; height: 30px; border: 1.5px solid var(--orange); }
+    .cover .mark.circle { border-radius: 50%; background: radial-gradient(circle,
+        transparent 0 3px, var(--orange) 3px 4.5px, transparent 4.5px 8px, var(--orange) 8px 9.5px, transparent 9.5px); }
+    .cover .mark.diamond { transform: rotate(45deg) scale(.8); }
+    .cover .t { font: 600 clamp(12px, 1.5vw, 15px)/1.25 var(--serif); }
+    .cover .imp { font: 700 7px/1 var(--sans); letter-spacing: .25em; opacity: .75; }
+    .cover .imp::before { content: ""; display: block; width: 16px; height: 1.5px; background: var(--orange); margin: 0 auto 6px; }
+    .c1 { background: linear-gradient(135deg, #1F3A5F, #14263F); } .c2 { background: linear-gradient(135deg, #6B2737, #4A1824); }
+    .c3 { background: linear-gradient(135deg, #2F4F3E, #1E3429); } .c4 { background: linear-gradient(135deg, #5B4A7A, #3C3053); }
+    .c5 { background: linear-gradient(135deg, #7A5A2E, #54391A); } .c6 { background: linear-gradient(135deg, #1F5560, #133A42); }
+
+    /* Sections */
+    section { padding: 72px 0; }
+    section.alt { background: var(--surface); }
+    h2 { font: 600 clamp(30px, 4vw, 42px)/1.15 var(--serif); margin: 0 0 12px; }
+    .sub { color: var(--ink-soft); font-size: 19px; max-width: 40em; margin: 0 0 40px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .card { background: var(--card); border-radius: 18px; padding: 26px; }
+    .card h3 { margin: 12px 0 8px; font-size: 19px; }
+    .card p { margin: 0; color: var(--ink-soft); font-size: 16px; }
+    .icon { width: 40px; height: 40px; border-radius: 12px; background: color-mix(in srgb, var(--orange) 16%, transparent);
+            display: grid; place-items: center; color: var(--orange); font-size: 20px; }
+    .steps { counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .step::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+                    background: var(--orange); color: var(--on-orange); font-weight: 800; margin-bottom: 14px; }
+    .step h3 { margin: 0 0 6px; font-size: 20px; }
+    .step p { margin: 0; color: var(--ink-soft); }
+    .quote { font: italic 500 clamp(22px, 3vw, 30px)/1.4 var(--serif); max-width: 30em; margin: 0 auto; text-align: center; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .chip { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 15px; }
+    .chip::before { content: "✓ "; color: var(--orange); font-weight: 800; }
+    .devices { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    footer { padding: 40px 0 60px; color: var(--ink-faint); font-size: 14px; border-top: 1px solid var(--line); }
+    footer .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    footer a { color: var(--ink-soft); text-decoration: none; margin-right: 18px; }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; padding-top: 16px; }
+      .phone { width: min(280px, 80%); }
+      .shelf { grid-template-columns: repeat(3, 1fr); }
+      .grid, .steps, .devices { grid-template-columns: 1fr; }
+      nav .links { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { .writing::before { animation: none; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <div class="brand"><img src="babel-icon.png" alt=""><span>Babel</span></div>
+      <div class="links">
+        <a href="#features">Features</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div>
+        <div class="eyebrow">For iPhone &amp; iPad</div>
+        <h1>Any book you can imagine. Written on your device.</h1>
+        <p class="lead">Describe what you want to read. Babel plans the chapters and writes the book for you — page by page, right on your iPhone or iPad. No account. No internet. Nothing leaves your device.</p>
+        <p class="fine">Free of ads and tracking. Works in airplane mode.</p>
+      </div>
+
+      <div class="phone" aria-hidden="true">
+        <div class="screen">
+          <div class="bar"><i>‹</i><div><b>The Clockmaker of Prague</b><small>2 of 6 chapters written</small></div><i>Aa</i></div>
+          <div class="pagetext">
+            <div class="ch">Chapter 2</div>
+            <h4>Gears of Silver</h4>
+            <p>The workshop smelled of oil and cold brass. Anežka lit the lamp and bent over the clock her father had never finished, its hundred tiny wheels waiting in their velvet tray.</p>
+            <p>Somewhere beneath them, the old town bells began to count the hour — one, two, three — and on the thirteenth stroke, the silver gears began to turn on their own.</p>
+            <p>She did not breathe. The hands swept backwards once, twice, and stopped at a time that did not exist on any clock in Prague.</p>
+            <p>"So it was true," she whispered.</p>
+          </div>
+          <div class="writing">Writing Chapter 2…</div>
+          <div class="foot"><div class="track"><span></span></div>Chapter 2 of 6 · 4 min left in chapter</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="shelf" aria-label="Example books">
+      <div class="cover c1"><div class="mark"></div><div class="t">The Lighthouse Keeper's Last Winter</div><div class="imp">BABEL</div></div>
+      <div class="cover c2"><div class="mark circle"></div><div class="t">A Beginner's Guide to the Stars</div><div class="imp">BABEL</div></div>
+      <div class="cover c3"><div class="mark diamond"></div><div class="t">The Clockmaker of Prague</div><div class="imp">BABEL</div></div>
+      <div class="cover c4"><div class="mark circle"></div><div class="t">Murder on the Night Train to Lisbon</div><div class="imp">BABEL</div></div>
+      <div class="cover c5"><div class="mark diamond"></div><div class="t">A Short History of Tea</div><div class="imp">BABEL</div></div>
+      <div class="cover c6"><div class="mark"></div><div class="t">Stoicism for Busy People</div><div class="imp">BABEL</div></div>
+    </div>
+  </div>
+
+  <section class="alt" id="features">
+    <div class="wrap">
+      <h2>A library of books that don't exist yet.</h2>
+      <p class="sub">Novels, guides, histories, adventures — ask in your own words and start reading in moments.</p>
+      <div class="grid">
+        <div class="card"><div class="icon">✦</div><h3>Ask for anything</h3><p>Type an idea — "a cosy mystery on a night train" — and your exact idea appears first, next to suggested titles.</p></div>
+        <div class="card"><div class="icon">☰</div><h3>Planned like a real book</h3><p>Babel titles the book and plans six chapters before it writes a word, so the story holds together.</p></div>
+        <div class="card"><div class="icon">✎</div><h3>Read while it writes</h3><p>Each chapter appears on the page as it's written. At the end, one tap writes the next.</p></div>
+        <div class="card"><div class="icon">❖</div><h3>A calm page</h3><p>Serif type, generous spacing, seven text sizes. Tap the page and everything but the words disappears.</p></div>
+        <div class="card"><div class="icon">↺</div><h3>Your library remembers</h3><p>Continue Reading opens your book at the exact line you left it — even after a restart.</p></div>
+        <div class="card"><div class="icon">◐</div><h3>Light or dark</h3><p>A soft light grey or a deep dark grey, both with a warm orange accent. Switch in one tap.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>How it works.</h2>
+      <p class="sub">Three steps, no settings to learn.</p>
+      <div class="steps">
+        <div class="step"><h3>Ask</h3><p>Describe a book, or tap a cover on the Discover shelf.</p></div>
+        <div class="step"><h3>Babel plans it</h3><p>A title and six chapters, written by the AI built into the app.</p></div>
+        <div class="step"><h3>Read</h3><p>Start as soon as the first paragraph appears. Come back any time — your place is kept.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="privacy">
+    <div class="wrap">
+      <h2>Private by design.</h2>
+      <p class="sub">The AI that writes your books lives inside the app. Your ideas and your books never leave your device — there's nothing to sign up for and nowhere for them to go.</p>
+      <div class="chips">
+        <span class="chip">No account</span><span class="chip">No internet needed</span><span class="chip">No analytics</span>
+        <span class="chip">No ads</span><span class="chip">No tracking</span><span class="chip">Data Not Collected</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Made for iPhone and iPad.</h2>
+      <p class="sub">The same simple app on both — two screens, a handful of buttons — laid out to make the most of every display.</p>
+      <div class="devices">
+        <div class="card"><h3>iPhone</h3><p>A home screen with your library and ideas, and a reader built for one hand.</p></div>
+        <div class="card"><h3>iPad</h3><p>Wider shelves, larger covers, and a comfortable reading column in portrait or landscape.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <p class="quote">"Ask for a book. Start reading."</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <div class="row">
+        <div><a href="mailto:sivavimelrajhen@gmail.com">Contact</a></div>
+        <div>© 2026 Babel. Books are generated by AI and may contain mistakes.</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
